@@ -26,8 +26,8 @@ import org.dom4j.io.SAXReader;
 public class TRECModel {
 	IndexReader reader = null;
 	public static void main(String[] args) throws DocumentException, IOException, ParseException{
-		String docsPath = "/Users/qingping/TREC/Data/pmc-text-00";
-		String topicsPath = "/Users/qingping/TREC/Data/topics2014.xml";
+		String docsPath = "F:/研究生/研一/研一上学期/课程讲义/4现代信息检索/作业/pmc-text-01/00";
+		String topicsPath = "F:/研究生/研一/研一上学期/课程讲义/4现代信息检索/作业/topics2014.xml";
 		String resultPath = "result.txt";
 		int number = 1000;
 		float k1 = (float)1.2, b = (float)0.9;
@@ -43,6 +43,8 @@ public class TRECModel {
 	 * @throws IOException
 	 */
 	public void MakeIndex(String docsPath, String indexPath, boolean create) throws IOException{
+		System.out.println(indexPath);
+		System.out.println(docsPath);
 		if(docsPath != null){
 			IndexFile.IndexProcess(indexPath, docsPath, create);
 		}
@@ -64,10 +66,15 @@ public class TRECModel {
 		
 		FileWriter fw = new FileWriter(new File(resultPath));
 		
+		DataPreprocess dp = new DataPreprocess();
+		
 		for(Element topic : topics){
 			String typeStr = topic.attributeValue("type");
 			String IDStr = topic.attributeValue("number");
 			String queryStr = topic.element("summary").getText().trim();
+			
+			queryStr = dp.remove_stemming(queryStr);//去除停用词和还原词干
+			
 			System.out.println(typeStr);
 			System.out.println(queryStr);
 			
@@ -78,7 +85,7 @@ public class TRECModel {
 				Document doc = searcher.doc(hits[i].doc);
 				//<鏌ヨID> Q0 <鏂囨。ID> <鏂囨。鎺掑簭> <鏂囨。璇勫垎> <绯荤粺ID>
 				String docPath = doc.get("path");
-				String docID = docPath.substring(docPath.lastIndexOf('/')+1, docPath.lastIndexOf('.'));
+				String docID = docPath.substring(docPath.lastIndexOf('\\')+1, docPath.lastIndexOf('.'));
 				String resStr = IDStr+" Q0 " + docID + " " + (i+1) + " " + hits[i].score + " " + runName + "\n";
 //				System.out.print(resStr);
 				fw.write(resStr);

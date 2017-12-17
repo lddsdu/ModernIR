@@ -44,8 +44,10 @@ public class IndexFile {
 		if (args.length != 0) {
 			CommandProcess(args);
 		} else {
-			System.out.println("Indexing start...");
-			String docsPath = "/Users/qingping/TREC/Data/pmc-text-00/14";
+			System.out.println("Indexing start....");
+			System.out.println("Indexing start....");
+			String docsPath = "F:/研究生/研一/研一上学期/课程讲义/4现代信息检索/作业/pmc-text-01/14";
+			System.out.println(docsPath);
 			TestFiles(docsPath);
 		}
 	}
@@ -206,6 +208,9 @@ public class IndexFile {
 			// Note that FileReader expects the file to be in UTF-8 encoding.
 			// If that's not the case searching for special characters will
 			// fail.
+			DataPreprocess datatools = new DataPreprocess();
+			String contents = datatools.pre_process(file.toString());
+//			System.err.println(contents.substring(0, 100));
 			doc.add(new TextField("contents",
 					new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
 
