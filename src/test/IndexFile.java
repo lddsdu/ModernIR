@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -46,7 +47,7 @@ public class IndexFile {
 		} else {
 			System.out.println("Indexing start....");
 			System.out.println("Indexing start....");
-			String docsPath = "F:/ÑÐ¾¿Éú/ÑÐÒ»/ÑÐÒ»ÉÏÑ§ÆÚ/¿Î³Ì½²Òå/4ÏÖ´úÐÅÏ¢¼ìË÷/×÷Òµ/pmc-text-01/14";
+			String docsPath = "F:/ï¿½Ð¾ï¿½ï¿½ï¿½/ï¿½ï¿½Ò»/ï¿½ï¿½Ò»ï¿½ï¿½Ñ§ï¿½ï¿½/ï¿½Î³Ì½ï¿½ï¿½ï¿½/4ï¿½Ö´ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½Òµ/pmc-text-01/14";
 			System.out.println(docsPath);
 			TestFiles(docsPath);
 		}
@@ -208,11 +209,13 @@ public class IndexFile {
 			// Note that FileReader expects the file to be in UTF-8 encoding.
 			// If that's not the case searching for special characters will
 			// fail.
-			DataPreprocess datatools = new DataPreprocess();
-			String contents = datatools.pre_process(file.toString());
+
+			String contents = DataPreprocess.pre_process(file.toString());
 //			System.err.println(contents.substring(0, 100));
 			doc.add(new TextField("contents",
-					new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
+					new BufferedReader(new StringReader(contents))));
+//			doc.add(new TextField("contents",
+//					new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
 
 			if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
 				// New index, so we just add the document (no old document can

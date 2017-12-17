@@ -26,14 +26,19 @@ import org.dom4j.io.SAXReader;
 public class TRECModel {
 	IndexReader reader = null;
 	public static void main(String[] args) throws DocumentException, IOException, ParseException{
-		String docsPath = "F:/研究生/研一/研一上学期/课程讲义/4现代信息检索/作业/pmc-text-01/00";
-		String topicsPath = "F:/研究生/研一/研一上学期/课程讲义/4现代信息检索/作业/topics2014.xml";
-		String resultPath = "result.txt";
+//		String docsPath = "F:/锟叫撅拷锟斤拷/锟斤拷一/锟斤拷一锟斤拷学锟斤拷/锟轿程斤拷锟斤拷/4锟街达拷锟斤拷息锟斤拷锟斤拷/锟斤拷业/pmc-text-01/00";
+//		String topicsPath = "F:/锟叫撅拷锟斤拷/锟斤拷一/锟斤拷一锟斤拷学锟斤拷/锟轿程斤拷锟斤拷/4锟街达拷锟斤拷息锟斤拷锟斤拷/锟斤拷业/topics2014.xml";
+		String docsPath = "/Users/qingping/TREC/Data";
+		String topicsPath = "/Users/qingping/TREC/topics2014.xml";
+		String indexPath = "Lucene_TRECALL.index";
+		String runName = "stem";
 		int number = 1000;
-		float k1 = (float)1.2, b = (float)0.9;
+		
 		TRECModel tm = new TRECModel();
-		tm.MakeIndex(null, "Lucene_00.index", true);
-		tm.QueryTopicsBM25(topicsPath, resultPath, number, k1, b, "test");
+		//閲嶆柊寤虹珛绱㈠紩銆傚鏋滀笉鐢ㄩ噸鏂板缓绔嬬储寮曪紝鍙渶瑕佸皢docPath鏀逛负null鍗冲彲
+		tm.MakeIndex(null, indexPath, true);
+		float k1 = (float)1.5, b = (float)0.8;
+		tm.QueryTopicsBM25(topicsPath, number, k1, b, runName);
 	}
 	
 	/**
@@ -51,7 +56,7 @@ public class TRECModel {
 		reader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
 	}
 	
-	public void QueryTopicsBM25(String topicsPath, String resultPath, int nubmer, 
+	public void QueryTopicsBM25(String topicsPath, int nubmer, 
 			float k1, float b, String runName) throws DocumentException, IOException, ParseException{
 		List<Element> topics = GetTopics(topicsPath);
 		if(reader == null){
@@ -64,7 +69,7 @@ public class TRECModel {
 		//set parameters of BM25 model
 		searcher.setSimilarity(new BM25Similarity(k1, b));
 		
-		FileWriter fw = new FileWriter(new File(resultPath));
+		FileWriter fw = new FileWriter(new File(runName+"-"+k1+"-"+b+"-result.txt"));
 		
 		DataPreprocess dp = new DataPreprocess();
 		
@@ -73,19 +78,21 @@ public class TRECModel {
 			String IDStr = topic.attributeValue("number");
 			String queryStr = topic.element("summary").getText().trim();
 			
-			queryStr = dp.remove_stemming(queryStr);//去除停用词和还原词干
-			
+			System.out.println("--------------------------------------------------------");
 			System.out.println(typeStr);
-			System.out.println(queryStr);
+			System.out.println("before remove stemming:"+queryStr);
+			queryStr = dp.remove_stemming(queryStr);//去锟斤拷停锟矫词和伙拷原锟绞革拷
+			System.out.println("after remove stemming:"+queryStr);
 			
 			TopDocs results = searcher.search(parser.parse(queryStr), nubmer);
 			ScoreDoc[] hits = results.scoreDocs;
-			System.out.println(hits.length);
+//			System.out.println(hits.length);
 			for(int i = 0; i < hits.length; i++){
 				Document doc = searcher.doc(hits[i].doc);
 				//<鏌ヨID> Q0 <鏂囨。ID> <鏂囨。鎺掑簭> <鏂囨。璇勫垎> <绯荤粺ID>
 				String docPath = doc.get("path");
-				String docID = docPath.substring(docPath.lastIndexOf('\\')+1, docPath.lastIndexOf('.'));
+				
+				String docID = docPath.substring(Math.max(docPath.lastIndexOf('/'), docPath.lastIndexOf('\\'))+1, docPath.lastIndexOf('.'));
 				String resStr = IDStr+" Q0 " + docID + " " + (i+1) + " " + hits[i].score + " " + runName + "\n";
 //				System.out.print(resStr);
 				fw.write(resStr);
