@@ -1,4 +1,4 @@
-package test;
+package model;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -43,8 +43,8 @@ public class DataPreprocess {
 	public static String remove_stemming(String content) {
 		StringBuilder sb_reform = new StringBuilder();
 		Analyzer analyzer = new StandardAnalyzer();
-		TokenStream ts = analyzer.tokenStream("", new StringReader(content));//È¥³ýÍ£ÓÃ´Ê
-		ts = new PorterStemFilter(ts);//»¹Ô­´Ê¸É
+		TokenStream ts = analyzer.tokenStream("", new StringReader(content));//È¥ï¿½ï¿½Í£ï¿½Ã´ï¿½
+		ts = new PorterStemFilter(ts);//ï¿½ï¿½Ô­ï¿½Ê¸ï¿½
 		CharTermAttribute charTermAttribute = ts.addAttribute(CharTermAttribute.class);
 		try {
 			ts.reset();
@@ -60,7 +60,7 @@ public class DataPreprocess {
 	
 	
 	public static String pre_process (String doc_path) {
-		//È¥³ý<>¼°<>ÄÚµÄÄÚÈÝ
+		//È¥ï¿½ï¿½<>ï¿½ï¿½<>ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½
 		String res = null;
 		File doc_file = new File(doc_path);
 		try {
@@ -90,11 +90,11 @@ public class DataPreprocess {
 			e.printStackTrace();
 		}
 		
-		//È¥³ýÍ£ÓÃ´Ê¡¢»¹Ô­´Ê¸É
+		//È¥ï¿½ï¿½Í£ï¿½Ã´Ê¡ï¿½ï¿½ï¿½Ô­ï¿½Ê¸ï¿½
 		StringBuilder sb_reform = new StringBuilder();
 		Analyzer analyzer = new StandardAnalyzer();
-		TokenStream ts = analyzer.tokenStream("", new StringReader(res));//È¥³ýÍ£ÓÃ´Ê
-		ts = new PorterStemFilter(ts);//»¹Ô­´Ê¸É
+		TokenStream ts = analyzer.tokenStream("", new StringReader(res));//È¥ï¿½ï¿½Í£ï¿½Ã´ï¿½
+		ts = new PorterStemFilter(ts);//ï¿½ï¿½Ô­ï¿½Ê¸ï¿½
 		CharTermAttribute charTermAttribute = ts.addAttribute(CharTermAttribute.class);
 		try {
 			ts.reset();
