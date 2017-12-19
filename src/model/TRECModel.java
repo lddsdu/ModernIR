@@ -48,19 +48,19 @@ public class TRECModel {
 		tm.MakeIndex(null, indexPath, true);
 		float k1 = (float)1.5, b = (float)0.8;
 //		tm.QueryTopicsBM25(topicsPath, k1, b, null);
-		double[] k1s = TRECFloatRange(3, 5.21, 0.2);
+		double[] k1s = TRECFloatRange(3, 5, 0.2);
 		double[] bs = TRECFloatRange(0.6, 1, 0.05);
 		//利用grid search得到最优的参数
-		Entry<Float, Float> params = tm.GridSearchBM25(topicsPath, qrelsPath, k1s, bs);
-		
-//		//得出topics2015的结果
-		k1 = params.getKey();
-		b = params.getValue();
+//		Entry<Float, Float> params = tm.GridSearchBM25(topicsPath, qrelsPath, k1s, bs);
+//		
+////		//得出topics2015的结果
+//		k1 = params.getKey();
+//		b = params.getValue();
 		k1 = (float) 3.2;
 		b=(float) 0.8;
 		String topics2015Path = "/Users/qingping/TREC/topics2015A.xml";
 		String qrels2015Path = "qrels-treceval-2015.txt";
-		tm.setRunName("search2015");
+		tm.setRunName("search2015+type");
 		tm.QueryTopicsBM25(topics2015Path, k1, b, null);
 		float ndcg = tm.infNDCGOfQueryResult(qrels2015Path, tm.getResPath());
 		System.out.println("Topics 2015(k1="+k1+",b="+b+"): NDCG="+ndcg);
@@ -144,6 +144,10 @@ public class TRECModel {
 			String typeStr = topic.attributeValue("type");
 			String IDStr = topic.attributeValue("number");
 			String queryStr = topic.element("summary").getText().trim();
+
+			//add typeStr to queryStr
+			for(int i = 0; i < 1; i++)
+				queryStr += " "+typeStr;
 			
 //			System.out.println("--------------------------------------------------------");
 //			System.out.println(typeStr);
