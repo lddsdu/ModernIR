@@ -4,6 +4,12 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class Command {
+	/**
+	 * 运行一个终端命令，返回运行结果。
+	 * 
+	 * @param commandStr 要运行的命令
+	 * @return
+	 */
 	public static String exeCmd(String commandStr) {
 		BufferedReader br = null;
 		try {
